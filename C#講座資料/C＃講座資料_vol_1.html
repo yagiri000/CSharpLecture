@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="github_hu.css" type="text/css" />
+</head>
+<body>
+<h1 id="c講座資料-vol_1">C#講座資料 vol_1</h1>
+<p>本資料は、C#講座向けに、やぎりが撮影したスクリーンショットの集合体です。</p>
+<h2 id="今回何をやるか">今回何をやるか</h2>
+<p>以下の様な超高機能なメモ帳を作ります。<br /><img src="images_vol_1\sc0.png" alt="aaa" /></p>
+<h2 id="ツールボックスプロパティーウィンドウ表示">ツールボックス・プロパティーウィンドウ表示</h2>
+<p>まずはフォームを配置・調整するための、ツールボックス・プロパティーウィンドウを表示します。</p>
+<ul>
+<li><p>ツールボックスウィンドウ表示<br />「表示」→「ツールボックス」<br />または、[Ctrl+Alt+X]</p></li>
+<li><p>プロパティーウィンドウ表示<br />「表示」→「プロパティーウィンドウ」を押す<br />または[F4]<br />または[Alt+Enter]</p></li>
+</ul>
+<p>以下のスクショの画面右側に表示されているウィンドウが、ツールボックス・プロパティーウィンドウです。<br /><img src="images_vol_1\sc1.png" alt="aaa" /></p>
+<h2 id="プロジェクト作成">プロジェクト作成</h2>
+<p>ファイル→新規作成→プロジェクトから出てくるウィンドウから、 Visual C#→Windows フォームアプリケーションを選んでOKを押して作成<br /><img src="images_vol_1\sc00.png" alt="aaa" /></p>
+<h2 id="hello-worldボタンを作る">Hello, World!ボタンを作る</h2>
+<p>「TextBox」と「Button」を生成し、ボタンが押されたらHello,World!がテキストボックスに追加されるようにします。</p>
+<ol style="list-style-type: decimal">
+<li><p>「ツールボックス」→「コモンコントロール」から、TextBoxをドラッグアンドドロップして生成します。 <img src="images_vol_1\sc2.png" alt="aaa" /></p></li>
+<li>生成したテキストボックスを選択すると、「プロパティ」ウィンドウに各種パラメータが表示されます。<br />複数行のテキストを打ち込みたいので、Multilineをtrueにします。<br />Multilineをtrueにすると、縦に伸ばせるようになるので、伸ばします。
+<ul>
+<li>「アルファベット順」ボタンを押すと、アルファベット順に項目を表示できます。<br /><img src="images_vol_1\sc3.png" alt="aaa" /></li>
+</ul></li>
+<li><p>「プロパティ」→「Name」から、コントロールの名前を変えることが出来ます。textBox1だと分かりづらいので、mainTextBoxとかわかりやすい名前に変えておきましょう。<br />以下のすべてのサンプルコードでは、コントロールの名前がtextBox1とかのままなので、自分でつけた名前に適宜変えて下さい。<br /><img src="images_vol_1\rename.png" alt="aaa" /></p></li>
+<li><p>「ツールボックス」→「コモンコントロール」から、Buttonをドラッグアンドドロップして生成します。<br /><img src="images_vol_1\sc4.png" alt="aaa" /></p></li>
+<li><p>ButtonのTextを「Hello, World!」に変更します。<br /><img src="images_vol_1\sc5.png" alt="aaa" /></p></li>
+<li><p>生成されたbutton1をダブルクリックします。<br />コード入力画面に飛ぶと思います。ここでボタンが押された時のイベント処理を設定することが出来ます。</p></li>
+<li><p>以下の様なコードを書きます。<br /><img src="images_vol_1\sc6.png" alt="aaa" /></p></li>
+<li><p>Ctrl+F5で実行します。ボタンを押すとHello, World!という文字列がテキストボックスに追加されます。<br />連打するとたのしいです。<br /><img src="images_vol_1\sc7.png" alt="aaa" /></p></li>
+</ol>
+<h2 id="good-morning-good-nightボタンを作る">Good Morning, Good nightボタンを作る</h2>
+<p>ComboBoxを使う練習として、「Button」「ComboBox」を使い、選択した文字列を追加できるようにする。<br />ComboBoxは、項目を選択できるコントロールである。</p>
+<ol style="list-style-type: decimal">
+<li><p>「ツールボックス」→「コモンコントロール」から、ComboBoxをドラッグアンドドロップして生成します。<br /><img src="images_vol_1\sc10.png" alt="aaa" /></p></li>
+<li>「ツールボックス」→「コモンコントロール」から、Buttonをドラッグアンドドロップして生成します。<br /></li>
+<li><p>さっき生成したButtonのTextを「Add」にします。</p></li>
+<li><p>ComboBoxに項目を追加していきます。<br />生成したComboBoxを右クリック→「項目の編集」から、ComboBoxの項目を編集できます。<br />以下のように項目を追加して下さい。<br /><img src="images_vol_1\sc11.png" alt="aaa" /><br /><img src="images_vol_1\sc12.png" alt="aaa" /></p></li>
+<li><p>さっき生成したButtonをダブルクリックして、Buttonが押された時のイベントの中身を書きます。以下の様にコードを書いて下さい。</p>
+<pre><code>textBox1.Text += comboBox1.Text;</code></pre></li>
+<li><p>Ctrl+F5で実行すると、以下のようになり、comboBoxからAddボタンを押した時に貼り付けられるTextを選択できます。<br /><img src="images_vol_1\sc12.png" alt="aaa" /></p></li>
+<li><p>ComboBoxではじめに表示されているテキストは、Textプロパティで変更できます。</p></li>
+</ol>
+<h2 id="クリップボードにコピー貼り付け機能">クリップボードにコピー・貼り付け機能</h2>
+<p>クリップボードにコピー、クリップボードから貼付ボタンを作ります。<br />以下の様な2つのボタン（クリップボードにコピー、クリップボードから貼付）を作り、以下のコードを書くことで、クリップボードへのコピー・クリップボードからの貼付けが出来ます。<br />ちなみに、テキストボックスに何も書いてない状態でコピーしようとするとエラーが出ます。<br /><img src="images_vol_1\sc20.png" alt="aaa" /></p>
+<blockquote>
+<p>クリップボードにコピー</p>
+</blockquote>
+<pre><code>    Clipboard.SetText(textBox1.Text);</code></pre>
+<blockquote>
+<p>クリップボードから貼付</p>
+</blockquote>
+<pre><code>    textBox1.Text += Clipboard.GetText();</code></pre>
+<h2 id="置換機能">置換機能</h2>
+<ol style="list-style-type: decimal">
+<li><p>以下のようにTextBox2つとButton1つを生成してください。 <img src="images_vol_1\sc30.png" alt="aaa" /></p></li>
+<li><p>生成したボタンをダブルクリックして以下のコードを書きます。<br />Replace関数は、1番目の引数のテキストを2番目の引数のテキストにする関数です。</p>
+<pre><code>textBox1.Text = textBox1.Text.Replace(textBox2.Text, textBox3.Text);</code></pre>
+<p>一応、今のコードはこんな感じです。 <img src="images_vol_1\sc31.png" alt="aaa" /></p></li>
+<li><p>デバック実行すると、文字列の置換機能が実装されています。<br /><img src="images_vol_1\sc32.png" alt="aaa" /></p></li>
+</ol>
+<h2 id="ファイル保存機能">ファイル保存機能</h2>
+<p>テキストのセーブ機能とロード機能をつけます。 <img src="images_vol_1\sc40.png" alt="aaa" /></p>
+<ol style="list-style-type: decimal">
+<li><p>上記のようにSaveボタンとLoadボタンを作って下さい。</p></li>
+<li><p>ファイル操作のためのヘッダーみたいなやつを読み込みます。<br />プログラムの一番上に、usingがたくさんあると思いますが、そこに以下のも追加します。</p>
+<pre><code>using System.IO;</code></pre></li>
+</ol>
+<div class="figure">
+<img src="images_vol_1\sc41.png" alt="aaa" />
+<p class="caption">aaa</p>
+</div>
+<ol style="list-style-type: decimal">
+<li><p>それぞれダブルクリックして、イベントを設定します。以下のコードをそれぞれ貼り付けて下さい。</p>
+<pre><code>//セーブ
+using (var sw = new StreamWriter(&quot;aaa.txt&quot;, false, Encoding.GetEncoding(&quot;shift_jis&quot;)))
+{
+    sw.Write(textBox1.Text);
+}
+
+
+
+//ロード
+using (var sr = new StreamReader(&quot;aaa.txt&quot;, Encoding.GetEncoding(&quot;shift_jis&quot;)))
+{
+    textBox1.Text = sr.ReadToEnd();
+}</code></pre></li>
+<li><p>ファイルのセーブ・ロード機能がつきました。Ctrl+F5で実行してみてください。</p></li>
+<li><p>プロジェクトのフォルダ.txtが生成されていると思います。<br /><img src="images_vol_1\sc42.png" alt="aaa" /></p></li>
+</ol>
+<h2 id="演習問題">演習問題</h2>
+<p>「FileOpenボタン」を追加し、超高機能メモ帳を完成させる。<br />FileOpenボタンを押したら、以下の様なダイアログボックスを表示し、指定したテキストを開く機能を実装せよ。</p>
+<p>ヒント：<br />C#の情報は大体ググると出てくるし、そこで出たコードをコピペすれば大体動く。<br />今回は「ダイアログボックス ファイル　開く」あたりで検索してみよう。</p>
+<div class="figure">
+<img src="images_vol_1\sc50.png" alt="aaa" />
+<p class="caption">aaa</p>
+</div>
+<ul>
+<li>超高機能メモ帳の完成図<br /><img src="images_vol_1\sc0.png" alt="aaa" /></li>
+</ul>
+</body>
+</html>

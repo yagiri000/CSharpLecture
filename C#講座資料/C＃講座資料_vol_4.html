@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="github_hu.css" type="text/css" />
+</head>
+<body>
+<h1 id="c講座資料-vol_4">C#講座資料 vol_4</h1>
+<p>vol_4は、C#のプロパティ・ラムダ式・LINQに関する資料です。<br />vol_4のプログラムは、コンソール上で動かすことを想定しています。<br />（コンソール アプリケーションで作って下さい。）</p>
+<h2 id="プロパティ">プロパティ</h2>
+<p>規模の大きいプログラミングを行うと、オブジェクトの値を取得したいが、外から変更できないようにしたい場合がある。<br />そのようなときに、C++では、値をprivateにし、値を得るための関数を別に用意していたと思う。<br />以下に例を示す。<br />Func関数が何回呼ばれたかを保存するcountCallFunc変数は、外部から取得はしたいが、変更はされたくない。<br />よって、countCallFuncはprivateにし、getter（取得する関数の総称）関数だけを用意した。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+
+<span class="kw">class</span> Hoge
+{
+    <span class="kw">public</span> <span class="dt">int</span> countCallFunc;
+    <span class="kw">public</span> <span class="fu">Hoge</span>()
+    {
+        <span class="kw">this</span>.<span class="fu">countCallFunc</span> = <span class="dv">0</span>;
+    }
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">Func</span>()
+    {
+        countCallFunc++;
+    }
+    <span class="kw">public</span> <span class="dt">int</span> <span class="fu">getCountCallFunc</span>()
+    {
+        <span class="kw">return</span> countCallFunc;
+    }
+}
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">var</span> ins = <span class="kw">new</span> <span class="fu">Hoge</span>();
+            
+            <span class="kw">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">5</span>; i++){
+                ins.<span class="fu">Func</span>();
+            }
+
+            Console.<span class="fu">WriteLine</span>(ins.<span class="fu">getCountCallFunc</span>());
+        }
+    }
+}</code></pre>
+<p>しかし、いちいちgetter関数を用意するのは面倒である。そのようなときに使用するのがプロパティである。 プロパティを使うことによって、外部からは変数と同じようにアクセスすることが出来、値の取得、設定の可能、不可能が設定できる変数を作ることが出来る。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+
+<span class="kw">class</span> Hoge
+{
+    <span class="kw">public</span> <span class="dt">int</span> countCallFunc;
+    <span class="kw">public</span> <span class="fu">Hoge</span>()
+    {
+        <span class="kw">this</span>.<span class="fu">countCallFunc</span> = <span class="dv">0</span>;
+    }
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">Func</span>()
+    {
+        countCallFunc++;
+    }
+    <span class="kw">public</span> <span class="dt">int</span> CountCallFunc
+    {
+        <span class="kw">get</span> { <span class="kw">return</span> countCallFunc; }
+    }
+}
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">var</span> ins = <span class="kw">new</span> <span class="fu">Hoge</span>();
+            
+            <span class="kw">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">5</span>; i++){
+                ins.<span class="fu">Func</span>();
+            }
+
+            Console.<span class="fu">WriteLine</span>(ins.<span class="fu">CountCallFunc</span>);
+        }
+    }
+}</code></pre>
+<p>標準ライブラリのオブジェクトにもプロパティは使われている。<br />例えば、ListのCountもプロパティである。<br />プロパティによって、オブジェクト指向のカプセル化を実現することが出来る。</p>
+<p>「右クリック→リファクタ→フィールドのカプセル化」から自動生成することも出来る。</p>
+<ul>
+<li>書き方</li>
+</ul>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">private</span> <span class="dt">int</span> val;<span class="co">//クラスのメンバ変数</span>
+<span class="kw">public</span> <span class="dt">int</span> Val
+{
+    <span class="kw">get</span> { <span class="kw">return</span> val; }
+    <span class="kw">set</span> { val = value; }<span class="co">//valueは予約語で、外から渡される変数</span>
+}</code></pre>
+<h2 id="ラムダ式">ラムダ式</h2>
+<p>ラムダ式を使用することで、名前の無い関数を作ることが出来る。</p>
+<p>動的配列の要素を削除するRemoveAll関数があるが、この関数は引数に「要素を削除するかどうかを判定する関数」をとる。<br />「要素を削除するかどうかを判定する関数」は、他の場所で使うことはまずないと思われるし、定義と実際に使う場所が離れているとプログラムの見通しが悪くなる。<br />よって、そのようなときにラムダ式を使用し、RemoveAll関数の引数内に直接関数を生成する。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">var</span> list = <span class="kw">new</span> List&lt;<span class="dt">int</span>&gt;();
+            <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">10</span>; i++)
+            {
+                list.<span class="fu">Add</span>(i);
+            }
+
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> list)
+            {
+                Console.<span class="fu">Write</span>(i + <span class="st">&quot; &quot;</span>);
+            }
+            Console.<span class="fu">WriteLine</span>();
+
+            list.<span class="fu">RemoveAll</span>(x =&gt; x % <span class="dv">2</span> == <span class="dv">0</span>);
+
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> list)
+            {
+                Console.<span class="fu">Write</span>(i + <span class="st">&quot; &quot;</span>);
+            }
+            Console.<span class="fu">WriteLine</span>();
+        }
+    }
+}</code></pre>
+<p>上の例の、</p>
+<pre class="cshrap"><code>x =&gt; x % 2 == 0</code></pre>
+<p>という関数は、</p>
+<pre class="cshrap"><code>bool compare(int x){
+    return x % 2 == 0;
+}</code></pre>
+<p>と同じである。</p>
+<h2 id="linq">LINQ</h2>
+<p>LINQとは、データベース操作を行うことが出来る機能のこと。</p>
+<h2 id="linq_where">LINQ_Where</h2>
+<p>条件に合うもののみを返す。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">var</span> list = <span class="kw">new</span> <span class="dt">string</span>[]{<span class="st">&quot;sunday&quot;</span>, <span class="st">&quot;monday&quot;</span>, <span class="st">&quot;tuesday&quot;</span>, <span class="st">&quot;wednesday&quot;</span>};
+            <span class="dt">var</span> list2 = list.<span class="fu">Where</span>(x =&gt; x.<span class="fu">Contains</span>(<span class="st">&quot;n&quot;</span>));
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> list2)
+            {
+                Console.<span class="fu">WriteLine</span>(i);
+            }
+        }
+    }
+}</code></pre>
+<h2 id="linq_select">LINQ_Select</h2>
+<p>Selectは、配列の中のクラスの特定のメンバのみの配列を作る事が出来ます。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+
+<span class="kw">class</span> Vector3
+{
+    <span class="kw">public</span> <span class="dt">double</span> x;
+    <span class="kw">public</span> <span class="dt">double</span> y;
+    <span class="kw">public</span> <span class="dt">double</span> z;
+    <span class="kw">public</span> <span class="fu">Vector3</span>(<span class="dt">double</span> x, <span class="dt">double</span> y, <span class="dt">double</span> z)
+    {
+        <span class="kw">this</span>.<span class="fu">x</span> = x;
+        <span class="kw">this</span>.<span class="fu">y</span> = y;
+        <span class="kw">this</span>.<span class="fu">z</span> = z;
+    }
+}
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">var</span> list = <span class="kw">new</span> List&lt;Vector3&gt;();
+            <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">5</span>; i++)
+            {
+                list.<span class="fu">Add</span>(<span class="kw">new</span> <span class="fu">Vector3</span>(<span class="dv">10</span> - i, i, i * i));
+            }
+
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> list)
+            {
+                Console.<span class="fu">WriteLine</span>(i.<span class="fu">x</span> + <span class="st">&quot; &quot;</span> + i.<span class="fu">y</span> + <span class="st">&quot; &quot;</span> + i.<span class="fu">z</span>);
+            }
+            Console.<span class="fu">WriteLine</span>();
+
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> list.<span class="fu">Select</span>( p =&gt; p.<span class="fu">x</span>))
+            {
+                Console.<span class="fu">WriteLine</span>(i);
+            }
+            Console.<span class="fu">WriteLine</span>();
+
+        }
+    }
+}</code></pre>
+<h2 id="linq_orderby">LINQ_OrderBy</h2>
+<p>OrderByは、クラスの中の特定のメンバを基準に並び替えた配列を返す。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+
+<span class="kw">class</span> Vector3
+{
+    <span class="kw">public</span> <span class="dt">double</span> x;
+    <span class="kw">public</span> <span class="dt">double</span> y;
+    <span class="kw">public</span> <span class="dt">double</span> z;
+    <span class="kw">public</span> <span class="fu">Vector3</span>(<span class="dt">double</span> x, <span class="dt">double</span> y, <span class="dt">double</span> z)
+    {
+        <span class="kw">this</span>.<span class="fu">x</span> = x;
+        <span class="kw">this</span>.<span class="fu">y</span> = y;
+        <span class="kw">this</span>.<span class="fu">z</span> = z;
+    }
+}
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">var</span> list = <span class="kw">new</span> List&lt;Vector3&gt;();
+            <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">5</span>; i++)
+            {
+                list.<span class="fu">Add</span>(<span class="kw">new</span> <span class="fu">Vector3</span>(<span class="dv">10</span> - i, i, i * i));
+            }
+
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> list)
+            {
+                Console.<span class="fu">WriteLine</span>(i.<span class="fu">x</span> + <span class="st">&quot; &quot;</span> + i.<span class="fu">y</span> + <span class="st">&quot; &quot;</span> + i.<span class="fu">z</span>);
+            }
+            Console.<span class="fu">WriteLine</span>();
+
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> list.<span class="fu">OrderBy</span>(p =&gt; p.<span class="fu">x</span>))
+            {
+                Console.<span class="fu">WriteLine</span>(i.<span class="fu">x</span> + <span class="st">&quot; &quot;</span> + i.<span class="fu">y</span> + <span class="st">&quot; &quot;</span> + i.<span class="fu">z</span>);
+            }
+            Console.<span class="fu">WriteLine</span>();
+
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> list.<span class="fu">OrderBy</span>(p =&gt; p.<span class="fu">y</span>))
+            {
+                Console.<span class="fu">WriteLine</span>(i.<span class="fu">x</span> + <span class="st">&quot; &quot;</span> + i.<span class="fu">y</span> + <span class="st">&quot; &quot;</span> + i.<span class="fu">z</span>);
+            }
+            Console.<span class="fu">WriteLine</span>();
+
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> list.<span class="fu">OrderBy</span>(p =&gt; p.<span class="fu">z</span>))
+            {
+                Console.<span class="fu">WriteLine</span>(i.<span class="fu">x</span> + <span class="st">&quot; &quot;</span> + i.<span class="fu">y</span> + <span class="st">&quot; &quot;</span> + i.<span class="fu">z</span>);
+            }
+            Console.<span class="fu">WriteLine</span>();
+
+        }
+    }
+}</code></pre>
+</body>
+</html>

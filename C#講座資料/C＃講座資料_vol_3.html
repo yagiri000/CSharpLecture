@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="github_hu.css" type="text/css" />
+</head>
+<body>
+<h1 id="c講座資料-vol_3">C#講座資料 vol_3</h1>
+<p>vol_3は、C#のファイル操作に関する資料です。<br />vol_3のプログラムは、コンソール上で動かすことを想定しています。<br />（コンソール アプリケーションで作って下さい。）</p>
+<h2 id="ファイル書き込み_streamwriter">ファイル書き込み_StreamWriter</h2>
+<p>文字列のファイル書き込みにはStreamWriterを使うと良い。<br />以下の様なプログラムを書いて実行すると、「プロジェクトのフォルダ」にaaa.txtが生成される。<br />メモ帳で開くと、「hoge」と書かれていることが確認できる。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+<span class="kw">using</span> System.<span class="fu">IO</span>;
+
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Encoding enc = Encoding.<span class="fu">GetEncoding</span>(<span class="st">&quot;shift_jis&quot;</span>);
+            StreamWriter sw = <span class="kw">new</span> <span class="fu">StreamWriter</span>(<span class="st">&quot;aaa.txt&quot;</span>, <span class="kw">false</span>, enc);
+            sw.<span class="fu">Write</span>(<span class="st">&quot;hoge&quot;</span>);
+            sw.<span class="fu">Close</span>();
+        }
+    }
+}</code></pre>
+<p>StreamWriterのコンストラクタ引数は以下。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="fu">StreamWriter</span>([ファイル名], [文字を追加or上書き], [エンコード])</code></pre>
+<h2 id="usingのもう一つの機能">usingのもう一つの機能</h2>
+<p>もう一つの機能というか、同じusingという単語でも全く別の機能である。<br />以下のようにusingを使えば、usingブロックを抜けた時に自動的にStreamが破棄されるので、Closeを呼ばずにすみ便利。<br />下の例では、varで型推論をし、Encoding.GetEncoding関数をコンストラクタ内に直接書いている。上と見比べてみよう。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+<span class="kw">using</span> System.<span class="fu">IO</span>;
+
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="kw">using</span> (<span class="dt">var</span> sw = <span class="kw">new</span> <span class="fu">StreamWriter</span>(<span class="st">&quot;aaa.txt&quot;</span>, <span class="kw">false</span>, Encoding.<span class="fu">GetEncoding</span>(<span class="st">&quot;shift_jis&quot;</span>)))
+            {
+                sw.<span class="fu">Write</span>(<span class="st">&quot;hoge&quot;</span>);
+            }
+        }
+    }
+}</code></pre>
+<h2 id="ファイル読み込み_streamreader">ファイル読み込み_StreamReader</h2>
+<p>StreamReaderを使うと、ファイルを読み込むことが出来る。<br />aaa.txtの中身をすべて表示する例。</p>
+<pre class="cshrap"><code>using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+
+
+namespace csharp_console_test
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using (var sr = new StreamReader(&quot;aaa.txt&quot;, Encoding.GetEncoding(&quot;shift_jis&quot;)))
+            {
+                Console.Write(sr.ReadToEnd());
+            }
+        }
+    }
+}</code></pre>
+<h2 id="ファイルの存在を確認">ファイルの存在を確認</h2>
+<p>File.Exists関数を使うと、ファイルが有るかどうかを確認できる。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">IO</span>;
+
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Console.<span class="fu">WriteLine</span>(File.<span class="fu">Exists</span>(<span class="st">&quot;aaa.txt&quot;</span>));
+            Console.<span class="fu">WriteLine</span>(File.<span class="fu">Exists</span>(<span class="st">&quot;bbb.txt&quot;</span>));
+        }
+    }
+}</code></pre>
+<h2 id="file.readlines関数">File.ReadLines関数</h2>
+<p>txtファイル向けの関数。ファイルを行ごとに分け、その配列を返す。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">IO</span>;
+
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="kw">foreach</span> (<span class="dt">string</span> line <span class="kw">in</span> File.<span class="fu">ReadLines</span>(<span class="st">&quot;aaa.txt&quot;</span>, Encoding.<span class="fu">GetEncoding</span>(<span class="st">&quot;shift_jis&quot;</span>)))
+            {
+                Console.<span class="fu">WriteLine</span>(line);
+            }
+        }
+    }
+}</code></pre>
+<p>csvを読み込む例</p>
+<pre class="cshrap"><code>using System;
+using System.Collections.Generic;
+using System.Text;
+using System.IO;
+
+
+namespace csharp_console_test
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            foreach (string line in File.ReadLines(&quot;aaa.txt&quot;, Encoding.GetEncoding(&quot;shift_jis&quot;)))
+            {
+                foreach (string i in line.Split(&#39;,&#39;))
+                {
+                    Console.Write(i + &quot;_&quot;);
+                }
+                Console.WriteLine();
+            }
+        }
+    }
+}</code></pre>
+<h2 id="現在基準としているフォルダの取得">現在基準としているフォルダの取得</h2>
+<p>System.IO.Directoryは、現在の基準としているフォルダの取得、フォルダ作成、フォルダの存在有無の確認、ファイル列挙を行える。</p>
+<p>Directory.GetCurrentDirectory()関数は、現在の基準としているフォルダを取得出来ます。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">IO</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Console.<span class="fu">WriteLine</span>(Directory.<span class="fu">GetCurrentDirectory</span>());
+        }
+    }
+}</code></pre>
+<p>Directory.CreateDirectory関数は、フォルダを作成することが出来ます。<br />Directory.Exists関数は、フォルダが存在しているかを返す関数です。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">IO</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="co">//Directory.CreateDirectory(&quot;bbb&quot;);</span>
+            Console.<span class="fu">WriteLine</span>(Directory.<span class="fu">Exists</span>(<span class="st">&quot;bbb&quot;</span>));
+        }
+    }
+}</code></pre>
+<p>Directory.GetFiles関数は、指定されたパスのフォルダに存在するファイルの文字列の配列を返します。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">IO</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> Directory.<span class="fu">GetFiles</span>(Directory.<span class="fu">GetCurrentDirectory</span>()))
+            {
+                Console.<span class="fu">WriteLine</span>(i);
+            }
+        }
+    }
+}</code></pre>
+<p>Directory.GetDirectories関数は、指定されたパスのフォルダに存在するフォルダの文字列の配列を返します。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">IO</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> Directory.<span class="fu">GetDirectories</span>(Directory.<span class="fu">GetCurrentDirectory</span>()))
+            {
+                Console.<span class="fu">WriteLine</span>(i);
+            }
+        }
+    }
+}</code></pre>
+<h2 id="外部exe起動">外部exe起動</h2>
+<p>System.Diagnostics.Process関数は、外部のアプリケーションを起動する。<br />今回はaaa.txtを開くが、関連付けされているメモ帳が自動で開くと思われる。<br />exeファイルを引数を渡しながら開くことも可能。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Diagnostics</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Process.<span class="fu">Start</span>(<span class="st">&quot;aaa.txt&quot;</span>);
+        }
+    }
+}</code></pre>
+<p>WaitForExit()を使えば、F5のみの実行でも外部で起動したプロセスが終了するまで黒画面が消えるのを停止させることが出来る。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Diagnostics</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Process.<span class="fu">Start</span>(<span class="st">&quot;aaa.txt&quot;</span>).<span class="fu">WaitForExit</span>();
+        }
+    }
+}</code></pre>
+</body>
+</html>

@@ -1,0 +1,721 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="github_hu.css" type="text/css" />
+</head>
+<body>
+<h1 id="c講座資料-vol_2">C#講座資料 vol_2</h1>
+<p>vol_2は、C#の基本的な機能の紹介です。<br />vol_2のプログラムは、コンソール上で動かすことを想定しています。<br />（コンソール アプリケーションで作って下さい。）　　</p>
+<h2 id="new">new</h2>
+<p>int, doubleなどの基本型以外は、インスタンス作成の際にnewが必要。<br />C#ではnewで確保した領域は使わなくなったら自動的に開放してくれる。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+<span class="kw">class</span> Hoge
+{
+    <span class="kw">public</span> <span class="dt">int</span> x;
+    <span class="kw">public</span> <span class="fu">Hoge</span>(<span class="dt">int</span> x)
+    {
+        <span class="kw">this</span>.<span class="fu">x</span> = x;
+    }
+}
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Hoge ins = <span class="kw">new</span> <span class="fu">Hoge</span>(<span class="dv">100</span>);
+            Console.<span class="fu">WriteLine</span>(ins.<span class="fu">x</span>);
+        }
+    }
+}</code></pre>
+<h2 id="クラス">クラス</h2>
+<p>それぞれのメンバ、関数にpublicかprivateを書くことで属性を指定。書かなければprivateになる。<br />以下のコードのpublicを消したらアクセス不可能になるのでエラーになる。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+<span class="kw">class</span> Hoge
+{
+    <span class="kw">public</span> <span class="dt">int</span> x;
+    <span class="kw">public</span> <span class="fu">Hoge</span>(<span class="dt">int</span> x)
+    {
+        <span class="kw">this</span>.<span class="fu">x</span> = x;
+    }
+    <span class="kw">public</span> <span class="dt">double</span> <span class="fu">func</span>()
+    {
+        <span class="kw">return</span> <span class="fl">1.0</span>;
+    }
+}
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Hoge ins = <span class="kw">new</span> <span class="fu">Hoge</span>(<span class="dv">100</span>);
+            Console.<span class="fu">WriteLine</span>(ins.<span class="fu">x</span>);
+            Console.<span class="fu">WriteLine</span>(ins.<span class="fu">func</span>());
+        }
+    }
+}</code></pre>
+<h2 id="usingについて">usingについて</h2>
+<p>ファイル上部にusingが複数あるが、これによって名前空間を指定できる。<br />以下で使用するStreamWriterは、System.IO名前空間内に属するので、使用するには</p>
+<pre class="sourceCode cs"><code class="sourceCode cs">System.<span class="fu">IO</span>.<span class="fu">StreamWriter</span></code></pre>
+<p>と書けばいいが、毎回書くのは面倒なので、プログラム上部に</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System.<span class="fu">IO</span>;</code></pre>
+<p>と書くことで、プログラム内では</p>
+<pre class="sourceCode cs"><code class="sourceCode cs">StreamWriter</code></pre>
+<p>と書くだけで済むようになる。</p>
+<h2 id="for-while-if">for, while, if</h2>
+<p>for, while, ifはC, Javaなどと同じ。</p>
+<h2 id="配列">配列</h2>
+<p>配列は以下のように書く。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="dt">int</span>[] array = <span class="kw">new</span> <span class="dt">int</span>[<span class="dv">5</span>];</code></pre>
+<p>0から9までの2乗の数を表示</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">int</span>[] array = <span class="kw">new</span> <span class="dt">int</span>[<span class="dv">10</span>];
+            <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">10</span>; i++)
+            {
+                array[i] = i * i;
+            }
+
+            <span class="kw">foreach</span> (var value <span class="kw">in</span> array)
+            {
+                Console.<span class="fu">WriteLine</span>(value);
+            }
+        }
+    }
+}</code></pre>
+<h2 id="var">var</h2>
+<p>型推論。C++でいうところのauto。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs">List&lt;<span class="dt">int</span>&gt; list = <span class="kw">new</span> List&lt;<span class="dt">int</span>&gt;();</code></pre>
+<p>上記を以下のように書ける。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="dt">var</span> list = <span class="kw">new</span> List&lt;<span class="dt">int</span>&gt;();</code></pre>
+<h2 id="foreach">foreach</h2>
+<p>for文の亜種。配列、リスト、ディクショナリなどの要素をはじめから最後まで順に処理する事が可能。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">int</span>[] array = <span class="kw">new</span> <span class="dt">int</span>[<span class="dv">10</span>];
+            <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">10</span>; i++)
+            {
+                array[i] = i * i;
+            }
+
+            <span class="kw">foreach</span> (var value <span class="kw">in</span> array)
+            {
+                Console.<span class="fu">WriteLine</span>(value);
+            }
+        }
+    }
+}</code></pre>
+<h2 id="string">string</h2>
+<p>C++でいうところのstring。int,double型などの数値型との+演算子が使用可能で、多くの機能が追加されており使いやすくなっている。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">string</span> hoge = <span class="st">&quot;aaa&quot;</span>;
+            Console.<span class="fu">WriteLine</span>(hoge);
+            Console.<span class="fu">WriteLine</span>(hoge + <span class="fl">3.14</span>);
+        }
+    }
+}</code></pre>
+<p>中でもSplit, Replace, IndexOf, Contains, Insert関数は便利。<br />Replace関数は、元の文字列を置換した文字列を返す関数で、元の文字列自体は置換処理が行われていないので注意。(Insert関数も同様)。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">string</span> str = <span class="st">&quot;aaa,bbb,ccc&quot;</span>;
+            <span class="dt">string</span>[] array = str.<span class="fu">Split</span>(&#39;,&#39;);
+            
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> array)
+            {
+                Console.<span class="fu">WriteLine</span>(i);
+            }
+
+            Console.<span class="fu">WriteLine</span>(<span class="st">&quot;&quot;</span>);
+
+            <span class="dt">string</span> tmp = str.<span class="fu">Replace</span>(<span class="st">&quot;,&quot;</span>, <span class="st">&quot;AAA&quot;</span>);
+            Console.<span class="fu">WriteLine</span>(tmp);
+            Console.<span class="fu">WriteLine</span>(<span class="st">&quot;&quot;</span>);
+
+            <span class="dt">int</span> pos = str.<span class="fu">IndexOf</span>(<span class="st">&quot;b&quot;</span>);
+            Console.<span class="fu">WriteLine</span>(pos);
+            Console.<span class="fu">WriteLine</span>(<span class="st">&quot;&quot;</span>);
+
+            <span class="dt">int</span> pos2 = str.<span class="fu">IndexOf</span>(<span class="st">&quot;d&quot;</span>);
+            Console.<span class="fu">WriteLine</span>(pos2);
+            Console.<span class="fu">WriteLine</span>(<span class="st">&quot;&quot;</span>);
+
+            <span class="dt">bool</span> isContain = str.<span class="fu">Contains</span>(<span class="st">&quot;aaa&quot;</span>);
+            Console.<span class="fu">WriteLine</span>(isContain);
+            Console.<span class="fu">WriteLine</span>(<span class="st">&quot;&quot;</span>);
+
+            <span class="dt">string</span> tmp2 = str.<span class="fu">Insert</span>(<span class="dv">4</span>, <span class="st">&quot;xxx&quot;</span>);
+            Console.<span class="fu">WriteLine</span>(tmp2);
+            Console.<span class="fu">WriteLine</span>(<span class="st">&quot;&quot;</span>);
+
+        }
+    }
+}</code></pre>
+<h2 id="直でforeach">直でforeach</h2>
+<p>関数の返り値で配列が返ってきた時など、foreachに生で中に入れても使えます。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">string</span> data = <span class="st">&quot;aaa,bbb,ccc&quot;</span>;
+            <span class="kw">foreach</span> (<span class="dt">string</span> i <span class="kw">in</span> data.<span class="fu">Split</span>(&#39;,&#39;))
+            {
+                Console.<span class="fu">WriteLine</span>(i);
+            }
+        }
+    }
+}</code></pre>
+<h2 id="list">List</h2>
+<p>C#の配列は生成時に要素数が固定されるが、Listは要素数が可変な配列である。<br />ジェネリクスで実装される可変長配列で、C++でいうところのvectorや、listに該当する。<br />Addで要素を追加できる。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            List&lt;<span class="dt">int</span>&gt; list = <span class="kw">new</span> List&lt;<span class="dt">int</span>&gt;();
+            <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">10</span>; i++)
+            {
+                list.<span class="fu">Add</span>(i);
+            }
+
+            <span class="kw">foreach</span> (var value <span class="kw">in</span> list)
+            {
+                Console.<span class="fu">WriteLine</span>(value);
+            }
+        }
+    }
+}</code></pre>
+<p>Countプロパティで要素数を得ることが出来る。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">var</span> list = <span class="kw">new</span> List&lt;<span class="dt">int</span>&gt;();
+            <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">5</span>; i++)
+            {
+                list.<span class="fu">Add</span>(i);
+            }
+
+            Console.<span class="fu">WriteLine</span>(list.<span class="fu">Count</span>);
+        }
+    }
+}</code></pre>
+<h2 id="removeall">RemoveAll</h2>
+<p>Listの要素は、RemoveAllでラムダ式を指定する削除が可能。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">var</span> list = <span class="kw">new</span> List&lt;<span class="dt">int</span>&gt;();
+            <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">10</span>; i++)
+            {
+                list.<span class="fu">Add</span>(i);
+            }
+            
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> list)
+            {
+                Console.<span class="fu">Write</span>(i + <span class="st">&quot; &quot;</span>);
+            }
+            Console.<span class="fu">WriteLine</span>();
+
+            list.<span class="fu">RemoveAll</span>(i =&gt; i % <span class="dv">2</span> == <span class="dv">0</span>);
+
+
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> list)
+            {
+                Console.<span class="fu">Write</span>(i + <span class="st">&quot; &quot;</span>);
+            }
+            Console.<span class="fu">WriteLine</span>();
+        }
+    }
+}</code></pre>
+<h2 id="dictionary">Dictionary</h2>
+<p>ジェネリクスにより実現された、連想配列。C++でいうところのmap</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">using</span> System;
+<span class="kw">using</span> System.Collections.Generic;
+<span class="kw">using</span> System.Linq;
+<span class="kw">using</span> System.Text;
+<span class="kw">using</span> System.Threading.Tasks;
+
+<span class="kw">class</span> MyClass
+{
+    <span class="kw">public</span> <span class="dt">int</span> x;
+    <span class="kw">public</span> MyClass(<span class="dt">int</span> x)
+    {
+        <span class="kw">this</span>.x = x;
+    }
+}
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="dt">static</span> <span class="dt">void</span> Main(string[] args)
+        {
+            var dic = <span class="kw">new</span> Dictionary&lt;string, MyClass&gt;();
+            dic.Add(<span class="st">&quot;aaa&quot;</span>, <span class="kw">new</span> MyClass(<span class="dv">100</span>));
+            dic.Add(<span class="st">&quot;bbb&quot;</span>, <span class="kw">new</span> MyClass(<span class="dv">200</span>));
+            dic.Add(<span class="st">&quot;ccc&quot;</span>, <span class="kw">new</span> MyClass(<span class="dv">300</span>));
+            dic.Add(<span class="st">&quot;ddd&quot;</span>, <span class="kw">new</span> MyClass(<span class="dv">400</span>));
+
+            <span class="co">//[]の中にキーを書くことで、要素にアクセスできる。</span>
+            Console.WriteLine(dic[<span class="st">&quot;bbb&quot;</span>].x);
+
+            <span class="co">//一覧表示</span>
+            <span class="kw">foreach</span> (var i in dic)
+            {
+                Console.WriteLine(i.Key + <span class="st">&quot; &quot;</span> + i.Value.x);
+            }
+        }
+    }
+}</code></pre>
+<h2 id="型変換">型変換</h2>
+<p>double→intのような大きな型から小さな型への型変換には明示的なキャストが必要。<br />(以下のコードの(int)を外すとエラー。)</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">double</span> aaa = <span class="fl">3.14</span>;
+            <span class="dt">int</span> bbb = (<span class="dt">int</span>)aaa;
+        }
+    }
+}</code></pre>
+<h2 id="if-endif">#if, #endif</h2>
+<p>#ifと#endifで囲んだ区間内は、ifの後にtrueが続けば有効化、falseが続けば無効化される。<br />同じソース内に複数の演習問題の解答を残しておきたい場合など、コメントアウトのように使うことが出来る。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">#if</span> <span class="kw">true</span>
+
+<span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Console.<span class="fu">WriteLine</span>(<span class="st">&quot;aaa&quot;</span>);
+        }
+    }
+}
+<span class="kw">#endif</span>
+
+<span class="kw">#if</span> <span class="kw">false</span>
+
+<span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Console.<span class="fu">WriteLine</span>(<span class="st">&quot;bbb&quot;</span>);
+        }
+    }
+}
+<span class="kw">#endif</span>
+
+<span class="kw">#if</span> <span class="kw">false</span>
+
+<span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Console.<span class="fu">WriteLine</span>(<span class="st">&quot;ccc&quot;</span>);
+        }
+    }
+}
+<span class="kw">#endif</span></code></pre>
+<p>#ifはtrue以外にもソースコード上に#defineで予め定義したシンボルを書いて判断させることも可能。</p>
+<p>以下ののように書くとAと出力される。状況に応じて複数のデバッグモードを用意する時に使える。 #defineの部分のみ書き換えればいいので複数個所のtrueとfalseを書き換える手間が省ける。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">#define</span> MODE_A
+
+<span class="kw">#if</span> MODE_A
+
+<span class="kw">using</span> System;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Console.<span class="fu">WriteLine</span>(<span class="st">&quot;aaa&quot;</span>);
+        }
+    }
+}
+<span class="kw">#elif</span> MODE_B
+
+<span class="kw">using</span> System;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Console.<span class="fu">WriteLine</span>(<span class="st">&quot;bbb&quot;</span>);
+        }
+    }
+}
+<span class="kw">#elif</span> MODE_C
+
+<span class="kw">using</span> System;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Console.<span class="fu">WriteLine</span>(<span class="st">&quot;bbb&quot;</span>);
+        }
+    }
+}
+<span class="kw">#else</span>
+
+<span class="kw">using</span> System;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Console.<span class="fu">WriteLine</span>(<span class="st">&quot;ccc&quot;</span>);
+        }
+    }
+}
+<span class="kw">#endif</span></code></pre>
+<h2 id="regionendregion">#region,#endregion</h2>
+<p>#region, #endregionで囲んだ部分のコードは、たたむことが出来るようになる。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+<span class="dv">#region hoge</span>
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+
+            <span class="dt">var</span> list = <span class="kw">new</span> List&lt;<span class="dt">int</span>&gt;();
+            <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">10</span>; i++)
+            {
+                list.<span class="fu">Add</span>(i * i);
+            }
+
+            <span class="kw">foreach</span> (var i <span class="kw">in</span> list)
+            {
+                Console.<span class="fu">WriteLine</span>(i);
+            }
+        }
+    }
+}
+<span class="dv">#endregion</span></code></pre>
+<h2 id="tostring関数">ToString関数</h2>
+<p>すべてのオブジェクトはtoStringメソッドを持ち、オブジェクトが文字列値として表されるべきときや、文字列が期待される構文で参照されたときに自動的に呼び出される。</p>
+<p>以下の例では、int型の変数をToStringメソッドを使って文字列に直している。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">int</span> num1 = <span class="dv">123</span>;
+            <span class="dt">int</span> num2 = <span class="dv">456</span>;
+
+            <span class="dt">string</span> str = num1.<span class="fu">ToString</span>() + num2.<span class="fu">ToString</span>();
+
+            Console.<span class="fu">WriteLine</span>(str);
+        }
+    }
+}</code></pre>
+<p>ToStringメソッドを使えば書式を指定して出力することができる。<br />以下の例では、小数点以下の桁数を指定して出力している。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">double</span> num = <span class="fl">3.14159</span>;
+
+            <span class="co">//普通に出力</span>
+            Console.<span class="fu">WriteLine</span>(num);
+
+            <span class="co">//小数点以下の桁数を指定して出力</span>
+            Console.<span class="fu">WriteLine</span>(num.<span class="fu">ToString</span>(<span class="st">&quot;F3&quot;</span>));
+        }
+    }
+}</code></pre>
+<h2 id="parse関数">Parse関数</h2>
+<p>(基本型).Parseで文字列を(基本型)に変換することが出来る。<br />int.Parse(str)で文字列をintに変換可能。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">int</span> hoge = <span class="dv">10</span>;
+            hoge += <span class="dt">int</span>.<span class="fu">Parse</span>(<span class="st">&quot;3&quot;</span>);
+            Console.<span class="fu">WriteLine</span>(hoge);
+        }
+    }
+}</code></pre>
+<p>double.Parse(str)で文字列をdoubleに変換可能。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">double</span> num;
+            num = <span class="dt">double</span>.<span class="fu">Parse</span>(<span class="st">&quot;3.14&quot;</span>);
+            Console.<span class="fu">WriteLine</span>(num);
+        }
+    }
+}</code></pre>
+<h2 id="mathクラス">Mathクラス</h2>
+<p>Cos, Sinなど数学関連が入っている。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            Console.<span class="fu">WriteLine</span>(Math.<span class="fu">Sin</span>(Math.<span class="fu">PI</span> / <span class="dv">4</span>));
+        }
+    }
+}</code></pre>
+<h2 id="参照渡し値渡し">参照渡し・値渡し</h2>
+<p>C#では、基本型は値渡し、クラスは参照渡しである。</p>
+<p>基本型とは、int, float, double, string, boolなどである。</p>
+<p>以下の例では、関数に基本型であるstringを渡しているので、参照渡しとなっており、main内のstrは書き換えられず、<code>abc</code>と出力される。</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">twi_string</span>(<span class="dt">string</span> str)
+        {
+            str = str + str;
+        }
+
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">string</span> str = <span class="st">&quot;abc&quot;</span>;
+            Program.<span class="fu">twi_string</span>(str);
+            Console.<span class="fu">WriteLine</span>(str);
+        }
+    }
+}</code></pre>
+<p>以下の例では、関数でクラスを参照渡ししているので、<code>abcabc</code>と出力される。<br />（関数内で、main内の、obj本体が書き換えられる。）</p>
+<pre class="sourceCode cs"><code class="sourceCode cs"><span class="kw">using</span> System;
+<span class="kw">using</span> System.<span class="fu">Collections</span>.<span class="fu">Generic</span>;
+<span class="kw">using</span> System.<span class="fu">Linq</span>;
+<span class="kw">using</span> System.<span class="fu">Text</span>;
+<span class="kw">using</span> System.<span class="fu">Threading</span>.<span class="fu">Tasks</span>;
+
+<span class="kw">class</span> Hoge
+{
+    <span class="kw">public</span> <span class="dt">string</span> str;
+    <span class="kw">public</span> <span class="fu">Hoge</span>(<span class="dt">string</span> str)
+    {
+        <span class="kw">this</span>.<span class="fu">str</span> = str;
+    }
+}
+
+<span class="kw">namespace</span> csharp_console_test
+{
+    <span class="kw">class</span> Program
+    {
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">twi_string</span>(Hoge obj)
+        {
+            obj.<span class="fu">str</span> = obj.<span class="fu">str</span> + obj.<span class="fu">str</span>;
+        }
+
+        <span class="kw">static</span> <span class="dt">void</span> <span class="fu">Main</span>(<span class="dt">string</span>[] args)
+        {
+            <span class="dt">var</span> obj = <span class="kw">new</span> <span class="fu">Hoge</span>(<span class="st">&quot;abc&quot;</span>);
+            <span class="fu">twi_string</span>(obj);
+            Console.<span class="fu">WriteLine</span>(obj.<span class="fu">str</span>);
+        }
+    }
+}
+</code></pre>
+</body>
+</html>

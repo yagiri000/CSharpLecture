@@ -1,0 +1,9 @@
+C:\Users\haku\Desktop\ハローメモ帳モザイク\bin\Debug\ハローメモ帳モザイク.exe.config
+C:\Users\haku\Desktop\ハローメモ帳モザイク\bin\Debug\ハローメモ帳モザイク.exe
+C:\Users\haku\Desktop\ハローメモ帳モザイク\bin\Debug\ハローメモ帳モザイク.pdb
+C:\Users\haku\Desktop\ハローメモ帳モザイク\obj\Debug\ハローメモ帳モザイク.csprojResolveAssemblyReference.cache
+C:\Users\haku\Desktop\ハローメモ帳モザイク\obj\Debug\ハローメモ帳モザイク.Form1.resources
+C:\Users\haku\Desktop\ハローメモ帳モザイク\obj\Debug\ハローメモ帳モザイク.Properties.Resources.resources
+C:\Users\haku\Desktop\ハローメモ帳モザイク\obj\Debug\ハローメモ帳モザイク.csproj.GenerateResource.Cache
+C:\Users\haku\Desktop\ハローメモ帳モザイク\obj\Debug\ハローメモ帳モザイク.exe
+C:\Users\haku\Desktop\ハローメモ帳モザイク\obj\Debug\ハローメモ帳モザイク.pdb
